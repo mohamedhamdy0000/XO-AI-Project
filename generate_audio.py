@@ -1,0 +1,63 @@
+"""
+generate_audio.py
+Pre-generates high-quality Modern Standard Arabic (لغة عربية فصحى متقنة ووقورة)
+voice lines using Microsoft Neural Arabic Voice (ar-SA-HamedNeural).
+Dignified, eloquent, respectful, and articulate.
+"""
+
+import asyncio
+import os
+import edge_tts
+
+AUDIO_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "audio")
+os.makedirs(AUDIO_DIR, exist_ok=True)
+
+VOICE = "ar-SA-HamedNeural"  # Cultured, articulate Classical / Modern Standard Arabic male voice
+
+AUDIO_LINES = {
+    # 1. Game Start (Human starts)
+    "start_1": "مرحباً بك، ابدأ أنت أولاً، وأتمنى لك جولة موفقة وممتعة.",
+    "start_2": "أهلاً بك يا صديقي، تفضل بالخطوة الأولى، ولنبدأ التحدي.",
+    "start_3": "الميدان لك، خذ وقتك في التفكير وابدأ بحركتك الافتتاحية.",
+
+    # 2. Game Start (AI starts)
+    "start_ai_1": "سأبدأ أنا هذه الجولة، راقب خطوتي الافتتاحية بدقة.",
+    "start_ai_2": "بداية الجولة من جانبي، استعد لخوض هذا النزال.",
+
+    # 3. Moves (Precise tactical board commentary)
+    "move_0": "اخترت الزاوية العليا، والآن دورك لتتحرك.",
+    "move_1": "وضعت علامتي في المنتصف العلوي، فكّر في خطوتك القادمة.",
+    "move_2": "أحكمت السيطرة على هذا الركن، بانتظار ردك.",
+    "move_3": "تحركت إلى الجانب الأيسر، ركّز جيداً على اللوحة.",
+    "move_4": "استحوذت على خانة المنتصف، فهي مفتاح السيطرة على الرقعة.",
+    "move_5": "أغلقت هذا الجانب، إلى أين ستتجه الآن؟",
+    "move_6": "الركن السفلي تحت سيطرتي، خطط لحركتك بعناية.",
+    "move_7": "تحركت إلى المنتصف السفلي، الدور لك الآن.",
+    "move_8": "شغلت هذه الزاوية، والنزال يزداد إثارة.",
+
+    # 4. Strategic Threat & Pressure
+    "threat_1": "احذر، فأنا على بعد خطوة واحدة فقط من حسم النتيجة!",
+    "threat_2": "انتبه جيداً لمواقع قطعك، فقد تركت مساراً خطيراً مكشوفاً!",
+    "threat_3": "ركز في دفاعك، فالفرصة باتت مواتية لإنهاء الجولة لصالحي!",
+
+    # 5. Game Over (Wins, Defeats, Draws)
+    "win_ai_1": "مباراة رائعة وتحدٍ مميز، حظاً أوفر في الجولة القادمة.",
+    "win_ai_2": "انتهت الجولة بفوزي، أشكرك على هذا التنافس الجميل.",
+    "win_human": "أحسنت صنعاً! لقد كانت خطة محكمة واستحققت الفوز بجدارة، مبارك لك.",
+    "draw_1": "تعادل مستحق، كان أداؤك الدفاعي ممتازاً طوال الجولة.",
+    "draw_2": "انتهت الجولة بالتعادل، لعب متكافئ ودقيق من الطرفين."
+}
+
+
+async def generate_all_audio():
+    print(f"Generating Modern Standard Arabic audio lines using {VOICE}...")
+    for key, text in AUDIO_LINES.items():
+        out_file = os.path.join(AUDIO_DIR, f"{key}.mp3")
+        print(f"--> Generating {key}.mp3: \"{text}\"")
+        communicate = edge_tts.Communicate(text=text, voice=VOICE, rate="+0%")
+        await communicate.save(out_file)
+    print("Done! All Modern Standard Arabic audio files generated successfully.")
+
+
+if __name__ == "__main__":
+    asyncio.run(generate_all_audio())
