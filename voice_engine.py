@@ -1,10 +1,3 @@
-"""
-voice_engine.py
-Modern Standard Arabic Voice Engine for XO (Tic-Tac-Toe).
-Plays dignified, articulate, studio-quality Arabic speech recordings completely OFFLINE!
-Uses Windows Multimedia API (mciSendString) for instantaneous, zero-lag playback.
-"""
-
 import ctypes
 import os
 import random
@@ -16,14 +9,11 @@ TTS_AVAILABLE = True
 
 
 class AIVoiceEngine:
-    """Manages articulate Modern Standard Arabic voice playback and speech bubble updates."""
-
     def __init__(self, enabled: bool = True):
         self.enabled = enabled
         self.last_comment: str = "مرحباً بك، أتمنى لك جولة ممتعة وحظاً موفقاً."
         self._lock = threading.Lock()
 
-        # Modern Standard Arabic Lines with corresponding MP3 audio files
         self.audio_start = [
             ("مرحباً بك، ابدأ أنت أولاً، وأتمنى لك جولة موفقة وممتعة.", "start_1.mp3"),
             ("أهلاً بك يا صديقي، تفضل بالخطوة الأولى، ولنبدأ التحدي.", "start_2.mp3"),
@@ -68,7 +58,6 @@ class AIVoiceEngine:
         ]
 
     def _play_mp3_async(self, mp3_filename: str):
-        """Plays the Arabic MP3 in a background thread."""
         if not self.enabled:
             return
 
@@ -80,19 +69,16 @@ class AIVoiceEngine:
             with self._lock:
                 try:
                     alias = f"ai_voice_{random.randint(100, 999)}"
-                    # Stop any previous playback
                     ctypes.windll.winmm.mciSendStringW('close all', None, 0, None)
-                    # Open and play MP3 via Windows Multimedia API
                     ctypes.windll.winmm.mciSendStringW(f'open "{mp3_path}" type mpegvideo alias {alias}', None, 0, None)
                     ctypes.windll.winmm.mciSendStringW(f'play {alias} wait', None, 0, None)
                     ctypes.windll.winmm.mciSendStringW(f'close {alias}', None, 0, None)
-                except Exception as e:
-                    print(f"Audio Playback Notice: {e}")
+                except Exception:
+                    pass
 
         threading.Thread(target=_worker, daemon=True).start()
 
     def play_phrase(self, text_arabic: str, mp3_name: str, on_text_spoken: Optional[Callable[[str], None]] = None):
-        """Updates UI with Arabic text and plays native audio."""
         self.last_comment = text_arabic
         if on_text_spoken:
             on_text_spoken(text_arabic)
